@@ -23,7 +23,6 @@ vue-loader是webpack中的一个loader,可以将以下格式的编写的模块`*
 
 vue-loader的一些特性
 
-
 * 默认支持 ES2015；
 * 允许对 Vue 组件的组成部分使用其它 webpack loader，比如对 <style> 使用 SASS 和对 <template> 使用 Jade；
 * .vue 文件中允许自定义节点，然后使用自定义的 loader 进行处理；
@@ -125,5 +124,5 @@ CSS Modules是一个用来模块化和组合CSS的流行系统。
 ```
 
 ---
-> [vue-loader](https://vue-loader.vuejs.org/zh-cn/)
+> [vue-loader官网](https://vue-loader.vuejs.org/zh-cn/)
 

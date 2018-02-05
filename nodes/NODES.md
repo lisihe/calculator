@@ -30,6 +30,7 @@ vue-loader的一些特性
 * 对每个组件模拟出 CSS 作用域；
 * 支持开发期组件的热重载。
 
+
 ### vue-loader热重载
 
 状态保留规则
@@ -54,6 +55,7 @@ module: {
 }
 ```
 
+
 ### vue-loader使用css-loader编译路径的规则
 
 * 如果路径是绝对路径，会原样保留。
@@ -63,6 +65,7 @@ module: {
     <img src="~/some-npm-package/foo.png">
 ```
 * (13.7.0+) 如果路径以 @ 开头，也会被看作模块依赖。如果你的 webpack 配置中给 @ 配置了 alias，这就很有用了。所有 vue-cli 创建的项目都默认配置了将 @ 指向 /src。
+
 
 ### file-loader & url-loader
 
@@ -76,6 +79,7 @@ cd hello-vue
 cnpm install 
 npm run dev
 ```
+
 
 ### 导入其它vue组件的典型写法
 
@@ -93,9 +97,11 @@ npm run dev
 </script>
 ```
 
+
 ### Babel
 Babel是一个JavaScript代码转换器，将ES6或更新的标准语法转换为当下普通浏览器都支持的ES5语法。`.babelrc`是babel的配置文件。
 [Babel官网](https://babeljs.cn/)
+
 
 ### CSS Modules
 CSS Modules是一个用来模块化和组合CSS的流行系统。

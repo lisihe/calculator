@@ -128,7 +128,111 @@ CSS Modules是一个用来模块化和组合CSS的流行系统。
   </p>
 </template>
 ```
+---
+### vue-router
+`<router-view/>`是渲染入口，路由匹配到的模板将在此处渲染。
+`<router-link to:"..."/>` 等同于 `router.push(location, onCompelet?, onAbort?)`（会向history中添加一条记录）,`location`参数可以使字符串路径或地址描述对象
+```javascript
+/ 字符串
+router.push('home')
 
+// 对象
+router.push({ path: 'home' })
+
+// 命名的路由
+router.push({ name: 'user', params: { userId: 123 }})
+
+// 带查询参数，变成 /register?plan=private
+router.push({ path: 'register', query: { plan: 'private' }})
+```
+
+用`beforeRouteUpdate`来响应路由变化
+
+`router.replace(location, onComplete?, onAbort?)`与push一样，但是只会替换当前hsitory记录，不会添加新history记录
+
+`router.go(int)` 在history记录中前进或后退几步。类似window.history.go()
+
+命名视图
+```html
+<router-view class="view one"></router-view>
+<router-view class="view two" name="a"></router-view>
+<router-view class="view three" name="b"></router-view>
+```
+```javascript
+const router = new VueRouter({
+  routes: [
+    {
+      path: '/',
+      components: {
+        default: Foo,
+        a: Bar,
+        b: Baz
+      }
+    }
+  ]
+})
+```
+嵌套命名视图
+```html
+<!-- UserSettings.vue -->
+<div>
+  <h1>User Settings</h1>
+  <NavBar/>
+  <router-view/>
+  <router-view name="helper"/>
+</div>
+```
+```javascript
+{
+  path: '/settings',
+  // 你也可以在顶级路由就配置命名视图
+  component: UserSettings,
+  children: [{
+    path: 'emails',
+    component: UserEmailsSubscriptions
+  }, {
+    path: 'profile',
+    components: {
+      default: UserProfile,
+      helper: UserProfilePreview
+    }
+  }]
+}
+```
+重定向
+```javascript
+const router = new VueRouter({
+  routes: [
+    { path: '/a', redirect: '/b' }
+  ]
+})
+
+const router = new VueRouter({
+  routes: [
+    { path: '/a', redirect: { name: 'foo' }}
+  ]
+})
+
+const router = new VueRouter({
+  routes: [
+    { path: '/a', redirect: to => {
+      // 方法接收 目标路由 作为参数
+      // return 重定向的 字符串路径/路径对象
+    }}
+  ]
+})
+```
+别名
+```javascript
+const router = new VueRouter({
+  routes: [
+    { path: '/a', component: A, alias: '/b' }
+  ]
+})
+```
 ---
 > [vue-loader官网](https://vue-loader.vuejs.org/zh-cn/)
+> [路径匹配引擎](https://github.com/pillarjs/path-to-regexp)
+> [animate.css动画](https://daneden.github.io/animate.css/)
+> [css 文本和div垂直居中方法汇总](http://blog.csdn.net/u014607184/article/details/51820508)
 

@@ -23,8 +23,8 @@
     <div id="buttons" @click="this.bounceIn">
       <div class="btn_line">
         <div class="btn" id="" @click="this.clear"><span>C</span></div>
-        <div class="btn" id=""><span>()</span></div>
-        <div class="btn" id=""><span>%</span></div>
+        <div class="btn" id=""><span>(</span></div>
+        <div class="btn" id=""><span>)</span></div>
         <div class="btn" id=""><span>÷</span></div>
       </div>
       <div class="btn_line">
@@ -62,20 +62,25 @@ export default {
     return {
       msg: '这是计算器',
       expression: '',
-      result: ''
+      result: '',
+      suffixExpArr: [],
+      stack: []
     }
   },
   methods: {
     bounceIn (event) {
       let input = event.target.innerText
-      this.expression = this.expression + input
-      console.log(event.target.innerText)
+      if (input !== 'C' && input !== '=') {
+        this.expression = this.expression + input
+        this.compute()
+      }
+      // console.log(event.target.innerText)
       // 如果表达式合法,计算结果
-      this.compute()
     },
     // 清除计算表达式
     clear (event) {
       this.expression = ''
+      this.result = ''
     },
     // 表达式向后删除一格
     delete (event) {
@@ -84,8 +89,97 @@ export default {
     },
     // 计算表达式的值
     compute () {
-      // later...
-      this.result = this.expression + '结果'
+      this.suffix()
+      const OPERATIONS = ['+', '-', 'x', '÷']
+      const SYMBOLS = ['(', ')', ...OPERATIONS]
+      this.stack = []
+      let num = 0
+      for (let s of this.suffixExpArr) {
+        if (!SYMBOLS.includes(s)) {
+          this.stack.push(s)
+        } else {
+          let o1 = Number.parseFloat(this.stack.pop())
+          let o2 = Number.parseFloat(this.stack.pop())
+          switch (s) {
+            case '+':
+              num = o2 + o1
+              break
+            case '-':
+              num = o2 - o1
+              break
+            case 'x':
+              num = o2 * o1
+              break
+            case '÷':
+              num = o2 / o1
+              break
+          }
+          this.stack.push(num)
+        }
+      }
+      this.result = num
+    },
+    suffix () {
+      // const OPERATIONS = ['+', '-', 'x', '÷']
+      // const SYMBOLS = ['(', ')', ...OPERATIONS]
+      const NUMBERS = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0']
+      const P1 = ['+', '-']
+      let fixinExpArr = [...this.expression]
+      // let fixinExpArr = this.expression.split(/['+'|'-'|'x'|'÷'|'('|')']/g)
+      console.log(fixinExpArr)
+      this.suffixExpArr = []
+      this.stack = []
+      for (let f of fixinExpArr) {
+        if (NUMBERS.includes(f)) {
+          // 如果是数字，直接输出
+          this.suffixExpArr.push(f)
+        } else {
+          let spop
+          switch (f) {
+            case '(': // 左括号，直接入栈
+              this.stack.push(f)
+              break
+            case '+':
+            case '-': // 加减符号，将栈中一直到数字的运算符都输出，然后入栈
+              spop = this.stack.pop()
+              while (!NUMBERS.includes(spop) && spop !== undefined && spop !== '(') {
+                this.suffixExpArr.push(spop)
+                spop = this.stack.pop()
+              }
+              if (spop !== undefined) {
+                this.stack.push(spop)
+              }
+              this.stack.push(f)
+              break
+            case 'x':
+            case '÷':
+              spop = this.stack.pop()
+              while (!NUMBERS.includes(spop) && spop !== undefined && !P1.includes(spop) && spop !== '(') {
+                console.log('/,,,,')
+                this.suffixExpArr.push(spop)
+                spop = this.stack.pop()
+              }
+              if (spop !== undefined) {
+                this.stack.push(spop)
+              }
+              this.stack.push(f)
+              break
+            case ')':
+              spop = this.stack.pop()
+              while (spop !== '(') {
+                this.suffixExpArr.push(spop)
+                spop = this.stack.pop()
+              }
+              break
+          }
+        }
+      }
+      let spop = this.stack.pop()
+      while (spop !== undefined) {
+        this.suffixExpArr.push(spop)
+        spop = this.stack.pop()
+      }
+      // this.result = this.suffixExpArr.join('')
     }
   }
 }

@@ -90,6 +90,7 @@ export default {
     // 计算表达式的值
     compute () {
       this.suffix()
+      console.log('表达式字符数组-后缀：' + this.suffixExpArr)
       const OPERATIONS = ['+', '-', 'x', '÷']
       const SYMBOLS = ['(', ')', ...OPERATIONS]
       this.stack = []
@@ -119,18 +120,28 @@ export default {
       }
       this.result = num
     },
-    suffix () {
+    suffix () { // 计算后缀表达式
+      /*
+      算法描述：准备一个空的堆栈，一个后缀表达式字符串数组，从左往右遍历中缀表达式字符串数组。
+      如果是左括号，入栈；
+      如果是数字，输出；
+      如果是+-，弹出并输出堆栈中的运算符，直到数字、左括号、空，然后再将此符号推入栈中；
+      如果是*÷，弹出并输出栈顶x或÷运算符，直到符号+\-、数字、左括号、空，然后再将此符号推入栈中；
+      如果是右括号，弹出并输出堆栈中直到左括号的所有字符；
+      最后弹出并输出堆栈中剩下的字符。
+      */
       // const OPERATIONS = ['+', '-', 'x', '÷']
       // const SYMBOLS = ['(', ')', ...OPERATIONS]
-      const NUMBERS = ['1', '2', '3', '4', '5', '6', '7', '8', '9', '0']
-      const P1 = ['+', '-']
-      let fixinExpArr = [...this.expression]
-      // let fixinExpArr = this.expression.split(/['+'|'-'|'x'|'÷'|'('|')']/g)
-      console.log(fixinExpArr)
+      const NUMBERS = /^\d*\.\d+|\d+$/g
+      const P1 = /^[+-]$/g
+      // 拆分算数表达式
+      // let fixinExpArr = [...this.expression]
+      let fixinExpArr = this.expression.match(/\d*\.\d+|\d+|[()x÷+-]/g)
+      console.log('表达式字符数组-中缀：' + fixinExpArr)
       this.suffixExpArr = []
       this.stack = []
       for (let f of fixinExpArr) {
-        if (NUMBERS.includes(f)) {
+        if (f.match(NUMBERS)) {
           // 如果是数字，直接输出
           this.suffixExpArr.push(f)
         } else {
@@ -142,7 +153,8 @@ export default {
             case '+':
             case '-': // 加减符号，将栈中一直到数字的运算符都输出，然后入栈
               spop = this.stack.pop()
-              while (!NUMBERS.includes(spop) && spop !== undefined && spop !== '(') {
+              while (spop !== undefined && !spop.match(NUMBERS) && spop !== '(') {
+                console.log('/,,,,')
                 this.suffixExpArr.push(spop)
                 spop = this.stack.pop()
               }
@@ -154,8 +166,7 @@ export default {
             case 'x':
             case '÷':
               spop = this.stack.pop()
-              while (!NUMBERS.includes(spop) && spop !== undefined && !P1.includes(spop) && spop !== '(') {
-                console.log('/,,,,')
+              while (spop !== undefined && !spop.match(NUMBERS) && !spop.match(P1) && spop !== '(') {
                 this.suffixExpArr.push(spop)
                 spop = this.stack.pop()
               }
@@ -180,6 +191,9 @@ export default {
         spop = this.stack.pop()
       }
       // this.result = this.suffixExpArr.join('')
+    },
+    splite (exp) { // 分割算数表达式为字符串数组
+      // do ..
     }
   }
 }
